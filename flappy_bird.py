@@ -235,6 +235,9 @@ def main():
                 if event.key == pygame.K_SPACE:
                     bird.jump()
 
+        if game_over:
+            game_over_func(win)
+
         if not game_over:
             global score
             rn = random_number(pipes[-1].x)  # pass in previous x pos
@@ -243,7 +246,7 @@ def main():
                 score += 1
                 pipe.display_score(win,  score)
                 pygame.display.update()
-            if pipes[0].x < -WIN_WIDTH:
+            if pipes[0].x < -PIPE_IMG.get_width():
                 pipes.pop(0)
             for pipe in pipes:
                 pipe.move()
@@ -252,12 +255,16 @@ def main():
             bird.move()
             base.move()
             draw_window(win, bird, pipes, base, score)
+            # check flying too high
+            if bird.y < 0:
+                game_over = True
             # check floor colision
             if bird.y + bird.img.get_height() >= 600:
+                score = 0
                 game_over = True
 
-        if game_over:
-            game_over_func(win)
+        # if game_over:
+        #     game_over_func(win)
 
     pygame.quit()
     quit()
